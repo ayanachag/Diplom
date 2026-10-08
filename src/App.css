@@ -88,10 +88,23 @@
   grid-row: 1;
 }
 
+.progress-ring {
+  display: block;
+}
+
+.ring-progress {
+  transition: stroke-dashoffset 0.6s ease;
+}
+
 .bottle {
   position: absolute;
   left: 87px;
   top: 49px;
+  overflow: visible;
+}
+
+.bottle-water {
+  transition: y 0.6s ease, height 0.6s ease;
 }
 
 .amount {
@@ -131,6 +144,26 @@
   padding: 10px 6px;
   background: #eff8fe;
   text-align: center;
+  transform-origin: center;
+}
+
+.card-praise.is-pulsing {
+  animation: praise-pulse 0.7s ease;
+}
+
+@keyframes praise-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(49, 169, 247, 0);
+  }
+  40% {
+    transform: scale(1.06);
+    box-shadow: 0 8px 18px rgba(49, 169, 247, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(49, 169, 247, 0);
+  }
 }
 
 .praise-title,
@@ -194,6 +227,29 @@
 
 .remain-bar {
   margin-top: 10px;
+  width: 101px;
+  height: 8px;
+  border-radius: 999px;
+  background: #dceaf6;
+  overflow: hidden;
+}
+
+.remain-bar-fill {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: #31a9f7;
+  transition: width 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-progress,
+  .bottle-water,
+  .remain-bar-fill,
+  .card-praise.is-pulsing {
+    transition: none;
+    animation: none;
+  }
 }
 
 .actions {

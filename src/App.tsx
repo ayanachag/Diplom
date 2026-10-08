@@ -3,13 +3,10 @@ import './App.css'
 import statusSignal from './assets/water/status-signal.svg'
 import statusWifi from './assets/water/status-wifi.svg'
 import statusBattery from './assets/water/status-battery.svg'
-import progressRing from './assets/water/progress-ring.svg'
-import bottle from './assets/water/bottle.svg'
 import settingsIcon from './assets/water/settings.svg'
 import dropPraise from './assets/water/drop-praise.svg'
 import dropRemain from './assets/water/drop-remain.svg'
 import divider from './assets/water/divider.svg'
-import progressBar from './assets/water/progress-bar.svg'
 import actionBg from './assets/water/action-bg.svg'
 import glass250 from './assets/water/glass-250.svg'
 import glass500 from './assets/water/glass-500.svg'
@@ -33,6 +30,11 @@ import navTrophy from './assets/water/nav-trophy.svg'
 import navProfile from './assets/water/nav-profile.svg'
 
 const GOAL = 2000
+const RING_RADIUS = 112
+const RING_LENGTH = 2 * Math.PI * RING_RADIUS
+const WATER_TOP = 29
+const WATER_BOTTOM = 137
+const WATER_SPAN = WATER_BOTTOM - WATER_TOP
 
 const actions = [
   { amount: 250, label: '+ 250 мл', icon: glass250, alt: 'Стакан 250 миллилитров' },
@@ -62,11 +64,69 @@ function grouped(value: number) {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
+function WaterBottle({ percent }: { percent: number }) {
+  const waterHeight = (WATER_SPAN * percent) / 100
+  const waterY = WATER_BOTTOM - waterHeight
+
+  return (
+    <svg
+      className="bottle"
+      width="67.1888"
+      height="143"
+      viewBox="0 0 67.1888 143"
+      fill="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <clipPath id="bottle-inner">
+          <rect x="6" y="29" width="50" height="108" rx="14" />
+        </clipPath>
+        <clipPath id="water-line">
+          <rect className="bottle-water" x="0" y={waterY} width="70" height={waterHeight} />
+        </clipPath>
+      </defs>
+      <path
+        d="M43 25H19C9.61116 25 2 32.6112 2 42V124C2 133.389 9.61116 141 19 141H43C52.3888 141 60 133.389 60 124V42C60 32.6112 52.3888 25 43 25Z"
+        fill="#CDEEFF"
+      />
+      <g clipPath="url(#bottle-inner)">
+        <rect className="bottle-water" x="6" y={waterY} width="50" height={waterHeight} fill="#35ADF6" opacity="0.8" />
+        <g clipPath="url(#water-line)">
+          <circle cx="25" cy="99" r="4" fill="#79CCFA" />
+          <circle cx="39" cy="113" r="4" fill="#79CCFA" />
+          <circle cx="23" cy="124" r="3" fill="#79CCFA" />
+        </g>
+      </g>
+      <path
+        d="M43 25H19C9.61116 25 2 32.6112 2 42V124C2 133.389 9.61116 141 19 141H43C52.3888 141 60 133.389 60 124V42C60 32.6112 52.3888 25 43 25Z"
+        fill="none"
+        stroke="#55BDF4"
+        strokeWidth="4"
+      />
+      <path
+        d="M44 5H18C15.7909 5 14 6.79086 14 9V24C14 26.2091 15.7909 28 18 28H44C46.2091 28 48 26.2091 48 24V9C48 6.79086 46.2091 5 44 5Z"
+        fill="#0B4E93"
+      />
+      <path
+        d="M42 0H20C18.8954 0 18 0.89543 18 2V6C18 7.10457 18.8954 8 20 8H42C43.1046 8 44 7.10457 44 6V2C44 0.89543 43.1046 0 42 0Z"
+        fill="#143C73"
+      />
+      <path
+        d="M47.9984 16C60.665 24 66.3317 36.3333 64.9984 53C63.665 64.3333 59.9984 66 53.9984 58C49.3317 51.3333 46.6662 29.1667 47.9996 16.5"
+        stroke="#123B77"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 export default function App() {
   const [consumed, setConsumed] = useState(1000)
   const [period, setPeriod] = useState<Period>('day')
   const [customOpen, setCustomOpen] = useState(false)
   const [customValue, setCustomValue] = useState('')
+  const [pulseId, setPulseId] = useState(0)
 
   const remaining = Math.max(GOAL - consumed, 0)
   const percent = Math.min(100, Math.round((consumed / GOAL) * 100))
@@ -80,6 +140,7 @@ export default function App() {
   function addWater(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) return
     setConsumed((value) => Math.min(9999, value + Math.round(amount)))
+    setPulseId((value) => value + 1)
   }
 
   function submitCustom(event: FormEvent) {
@@ -113,8 +174,25 @@ export default function App() {
 
         <div className="hero">
           <div className="ring">
-            <img src={progressRing} alt="" />
-            <img className="bottle" src={bottle} alt="Бутылка с водой" />
+            <svg className="progress-ring" width="242" height="242" viewBox="0 0 242 242" aria-hidden="true">
+              <circle cx="121" cy="121" r={RING_RADIUS} fill="none" stroke="#E3F1FB" strokeWidth="18" />
+              {percent > 0 && (
+                <circle
+                  className="ring-progress"
+                  cx="121"
+                  cy="121"
+                  r={RING_RADIUS}
+                  fill="none"
+                  stroke="#2AAAF8"
+                  strokeWidth="18"
+                  strokeLinecap="round"
+                  strokeDasharray={RING_LENGTH}
+                  strokeDashoffset={RING_LENGTH * (1 - percent / 100)}
+                  transform="rotate(-90 121 121)"
+                />
+              )}
+            </svg>
+            <WaterBottle percent={percent} />
           </div>
 
           <p className="amount">
@@ -123,7 +201,10 @@ export default function App() {
           </p>
 
           <div className="cards">
-            <article className="card card-praise">
+            <article
+              key={pulseId}
+              className={pulseId > 0 ? 'card card-praise is-pulsing' : 'card card-praise'}
+            >
               <img src={dropPraise} alt="" />
               <p className="praise-title">{praise.title}</p>
               <p className="praise-text">{praise.text}</p>
@@ -136,7 +217,16 @@ export default function App() {
               <img className="remain-divider" src={divider} alt="" />
               <p className="percent">{percent} %</p>
               <p className="percent-label">выполнено</p>
-              <img className="remain-bar" src={progressBar} alt="" />
+              <div
+                className="remain-bar"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={percent}
+                aria-label="Выполнено"
+              >
+                <span className="remain-bar-fill" style={{ width: `${percent}%` }} />
+              </div>
             </article>
           </div>
         </div>
