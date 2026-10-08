@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react'
+import StatsScreen from './StatsScreen'
 import './App.css'
 import statusSignal from './assets/water/status-signal.svg'
 import statusWifi from './assets/water/status-wifi.svg'
@@ -24,8 +25,6 @@ import bar7 from './assets/water/bar-7.svg'
 import dropTip from './assets/water/drop-tip.svg'
 import chevron from './assets/water/chevron.svg'
 import navBg from './assets/water/nav-bg.svg'
-import navWater from './assets/water/nav-water.svg'
-import navStats from './assets/water/nav-stats.svg'
 import navTrophy from './assets/water/nav-trophy.svg'
 import navProfile from './assets/water/nav-profile.svg'
 
@@ -143,6 +142,19 @@ function WaterBottle({ percent }: { percent: number }) {
   )
 }
 
+type Screen = 'water' | 'stats'
+
+function screenFromLocation(): Screen {
+  return window.location.pathname.replace(/\/+$/, '').endsWith('/stats') ? 'stats' : 'water'
+}
+
+function screenUrl(screen: Screen) {
+  const base = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`
+  return screen === 'stats' ? `${base}stats` : base
+}
+
 export default function App() {
   const [consumed, setConsumed] = useState(1000)
   const [period, setPeriod] = useState<Period>('day')
@@ -153,7 +165,20 @@ export default function App() {
   const [, setPortionTick] = useState(0)
   const consumedRef = useRef(1000)
   const portionsRef = useRef<number[]>([])
+  const [screen, setScreen] = useState<Screen>(screenFromLocation)
   const confetti = useMemo(() => (celebrate ? makeConfetti() : []), [celebrate])
+
+  useEffect(() => {
+    const onPop = () => setScreen(screenFromLocation())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  function openScreen(next: Screen) {
+    const url = screenUrl(next)
+    if (window.location.pathname !== url) window.history.pushState({}, '', url)
+    setScreen(next)
+  }
 
   useEffect(() => {
     if (!celebrate) return
@@ -204,7 +229,7 @@ export default function App() {
 
   return (
     <main className="stage">
-      <section className="phone" aria-label="Трекер воды">
+      <section className="phone" aria-label={screen === 'stats' ? 'Статистика' : 'Трекер воды'}>
         <header className="status">
           <time dateTime="09:41">9:41</time>
           <div className="status-icons" aria-hidden="true">
@@ -214,6 +239,11 @@ export default function App() {
           </div>
         </header>
 
+        <div className="screen-body">
+          {screen === 'stats' ? (
+            <StatsScreen consumed={consumed} />
+          ) : (
+            <>
         <div className="header">
           <div>
             <h1>Вода</h1>
@@ -394,16 +424,33 @@ export default function App() {
           <span>Пейте воду — сохраняйте энергию!</span>
           <img src={chevron} alt="" />
         </button>
+            </>
+          )}
+        </div>
 
         <nav className="nav" aria-label="Разделы">
           <img className="nav-bg" src={navBg} alt="" />
           <div className="nav-items">
-            <button type="button" className="nav-item nav-item-active" aria-current="page">
-              <img src={navWater} alt="" />
+            <button
+              type="button"
+              className={screen === 'water' ? 'nav-item nav-item-active' : 'nav-item'}
+              aria-current={screen === 'water' ? 'page' : undefined}
+              onClick={() => openScreen('water')}
+            >
+              <svg className="nav-mark" width="16" height="26" viewBox="0 0 16 26" aria-hidden="true">
+                <path d="M8 0C2.4 8.38708 0 13.4194 0 17.6129C0 19.8373 0.842856 21.9706 2.34315 23.5435C3.84344 25.1164 5.87827 26 8 26C10.1217 26 12.1566 25.1164 13.6569 23.5435C15.1571 21.9706 16 19.8373 16 17.6129C16 13.4194 13.6 8.38708 8 0Z" fill="currentColor" />
+              </svg>
               Вода
             </button>
-            <button type="button" className="nav-item">
-              <img src={navStats} alt="" />
+            <button
+              type="button"
+              className={screen === 'stats' ? 'nav-item nav-item-active' : 'nav-item'}
+              aria-current={screen === 'stats' ? 'page' : undefined}
+              onClick={() => openScreen('stats')}
+            >
+              <svg className="nav-mark" width="18" height="26" viewBox="0 0 17.8594 26.0001" aria-hidden="true">
+                <path d="M1.5 26.0001V13.9287M8.92969 26V6.5M16.3594 26V0" stroke="currentColor" strokeWidth="3" />
+              </svg>
               Статистика
             </button>
             <button type="button" className="nav-item">
