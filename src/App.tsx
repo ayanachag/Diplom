@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react'
 import './App.css'
 import statusSignal from './assets/water/status-signal.svg'
 import statusWifi from './assets/water/status-wifi.svg'
@@ -30,6 +30,20 @@ import navTrophy from './assets/water/nav-trophy.svg'
 import navProfile from './assets/water/nav-profile.svg'
 
 const GOAL = 2000
+const CONFETTI_COLORS = ['#2AAAF8', '#31A9F7', '#79CCFA', '#168eea', '#0B4E93', '#CDEEFF', '#35ADF6', '#102653', '#E3F1FB', '#ffffff']
+
+function makeConfetti() {
+  return Array.from({ length: 56 }, (_, index) => ({
+    id: index,
+    left: Math.random() * 100,
+    delay: Math.random() * 0.45,
+    duration: 2.6 + Math.random() * 1.6,
+    size: 9 + Math.random() * 11,
+    color: CONFETTI_COLORS[index % CONFETTI_COLORS.length],
+    drift: -36 + Math.random() * 72,
+    round: index % 4 === 0,
+  }))
+}
 const RING_RADIUS = 112
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS
 const WATER_TOP = 29
@@ -64,6 +78,13 @@ function grouped(value: number) {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
+function pressAction(event: MouseEvent<HTMLButtonElement>) {
+  const button = event.currentTarget
+  button.classList.remove('is-pressed')
+  void button.offsetWidth
+  button.classList.add('is-pressed')
+}
+
 function WaterBottle({ percent }: { percent: number }) {
   const waterHeight = (WATER_SPAN * percent) / 100
   const waterY = WATER_BOTTOM - waterHeight
@@ -92,9 +113,10 @@ function WaterBottle({ percent }: { percent: number }) {
       <g clipPath="url(#bottle-inner)">
         <rect className="bottle-water" x="6" y={waterY} width="50" height={waterHeight} fill="#35ADF6" opacity="0.8" />
         <g clipPath="url(#water-line)">
-          <circle cx="25" cy="99" r="4" fill="#79CCFA" />
-          <circle cx="39" cy="113" r="4" fill="#79CCFA" />
-          <circle cx="23" cy="124" r="3" fill="#79CCFA" />
+          <circle className="bubble bubble-a" cx="25" cy="108" r="3.5" fill="#E8F7FF" />
+          <circle className="bubble bubble-b" cx="39" cy="118" r="4" fill="#79CCFA" />
+          <circle className="bubble bubble-c" cx="22" cy="126" r="2.4" fill="#CDEEFF" />
+          <circle className="bubble bubble-d" cx="33" cy="122" r="1.8" fill="#ffffff" opacity="0.85" />
         </g>
       </g>
       <path
@@ -127,6 +149,14 @@ export default function App() {
   const [customOpen, setCustomOpen] = useState(false)
   const [customValue, setCustomValue] = useState('')
   const [pulseId, setPulseId] = useState(0)
+  const [celebrate, setCelebrate] = useState(false)
+  const confetti = useMemo(() => (celebrate ? makeConfetti() : []), [celebrate])
+
+  useEffect(() => {
+    if (!celebrate) return
+    const timer = window.setTimeout(() => setCelebrate(false), 4300)
+    return () => window.clearTimeout(timer)
+  }, [celebrate])
 
   const remaining = Math.max(GOAL - consumed, 0)
   const percent = Math.min(100, Math.round((consumed / GOAL) * 100))
@@ -139,7 +169,12 @@ export default function App() {
 
   function addWater(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) return
-    setConsumed((value) => Math.min(9999, value + Math.round(amount)))
+    const added = Math.round(amount)
+    setConsumed((value) => {
+      const next = Math.min(9999, value + added)
+      if (value < GOAL && next >= GOAL) setCelebrate(true)
+      return next
+    })
     setPulseId((value) => value + 1)
   }
 
@@ -237,7 +272,10 @@ export default function App() {
               key={action.amount}
               type="button"
               className="action"
-              onClick={() => addWater(action.amount)}
+              onClick={(event) => {
+                pressAction(event)
+                addWater(action.amount)
+              }}
             >
               <img src={actionBg} alt="" />
               <span className="action-body">
@@ -249,7 +287,10 @@ export default function App() {
           <button
             type="button"
             className="action"
-            onClick={() => setCustomOpen(true)}
+            onClick={(event) => {
+              pressAction(event)
+              setCustomOpen(true)
+            }}
           >
             <img src={actionBg} alt="" />
             <span className="action-body">
@@ -346,6 +387,26 @@ export default function App() {
             </button>
           </div>
         </nav>
+        {celebrate && (
+          <div className="celebration" role="status">
+            {confetti.map((piece) => (
+              <span
+                key={piece.id}
+                className={piece.round ? 'confetti confetti-round' : 'confetti'}
+                style={{
+                  left: `${piece.left}%`,
+                  width: piece.size,
+                  height: piece.round ? piece.size : piece.size * 1.6,
+                  background: piece.color,
+                  animationDelay: `${piece.delay}s`,
+                  animationDuration: `${piece.duration}s`,
+                  ['--drift' as string]: `${piece.drift}px`,
+                }}
+              />
+            ))}
+            <p className="celebration-title">Цель достигнута!</p>
+          </div>
+        )}
       </section>
     </main>
   )
