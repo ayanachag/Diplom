@@ -1,0 +1,445 @@
+.stage {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: #dfe7ef;
+}
+
+.phone {
+  width: 440px;
+  min-height: 956px;
+  background: #fff;
+  color: #102653;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 30px 0 35px;
+}
+
+.status time {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 31px 0 27px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1.05;
+  font-weight: 700;
+  color: #102653;
+}
+
+.header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #6381a8;
+}
+
+.icon-button,
+.action,
+.tip,
+.period,
+.nav-item,
+.custom button {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.icon-button {
+  margin-top: 8px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 242px 129px;
+  column-gap: 8px;
+  padding: 14px 30px 0 31px;
+}
+
+.ring {
+  position: relative;
+  width: 242px;
+  height: 242px;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.bottle {
+  position: absolute;
+  left: 87px;
+  top: 49px;
+}
+
+.amount {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #102653;
+}
+
+.amount em {
+  font-style: normal;
+  font-size: 23px;
+  color: #31a9f7;
+}
+
+.cards {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-praise {
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px;
+  background: #eff8fe;
+  text-align: center;
+}
+
+.praise-title,
+.praise-text,
+.remain-label,
+.remain-value,
+.percent,
+.percent-label {
+  margin: 0;
+}
+
+.praise-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #183a6c;
+}
+
+.praise-text {
+  font-size: 12px;
+  line-height: 1.2;
+  color: #3772b2;
+}
+
+.card-remain {
+  align-items: flex-start;
+  gap: 0;
+  padding: 10px 13px 12px;
+  background: #f3f8fc;
+}
+
+.remain-label {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6b82a2;
+}
+
+.remain-value {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #102653;
+}
+
+.remain-divider,
+.percent {
+  margin-top: 8px;
+}
+
+.percent {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: #102653;
+}
+
+.percent-label {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #7187a4;
+}
+
+.remain-bar {
+  margin-top: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 17px;
+  padding: 14px 30px 0;
+}
+
+.action {
+  position: relative;
+  width: 82px;
+  height: 82px;
+}
+
+.action-body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #17335d;
+}
+
+.custom {
+  margin: 12px 30px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f3f8fc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom label {
+  font-size: 14px;
+  color: #102653;
+}
+
+.custom input {
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 10px;
+  background: #fff;
+  color: #102653;
+  font-size: 16px;
+}
+
+.custom-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.custom button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: #e4f1fb;
+  color: #17335d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chart-card {
+  margin: 16px 30px 0;
+  width: 380px;
+  height: 214px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f7fafd;
+}
+
+.chart {
+  position: relative;
+  width: 360px;
+  height: 194px;
+}
+
+.chart h2 {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #102653;
+}
+
+.periods {
+  position: absolute;
+  top: 0;
+  left: 209px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.period {
+  font-size: 12px;
+  color: #667c99;
+}
+
+.period-active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 51px;
+  height: 25px;
+  border-radius: 10px;
+  background: #e4f1fb;
+  color: #17335d;
+  font-weight: 700;
+}
+
+.line-top {
+  position: absolute;
+  left: 34px;
+  top: 51px;
+}
+
+.line-mid {
+  position: absolute;
+  left: 34px;
+  top: 101px;
+}
+
+.line-base {
+  position: absolute;
+  left: 34px;
+  top: 151px;
+}
+
+.y-label {
+  position: absolute;
+  left: 0;
+  width: 26px;
+  text-align: right;
+  font-size: 10px;
+  color: #6d84a0;
+}
+
+.y-top {
+  top: 45px;
+}
+
+.y-mid {
+  top: 95px;
+}
+
+.y-base {
+  top: 145px;
+}
+
+.bar {
+  position: absolute;
+}
+
+.x-label {
+  position: absolute;
+  top: 163px;
+  width: 26px;
+  text-align: center;
+  font-size: 10px;
+  color: #617996;
+}
+
+.goal-pill {
+  position: absolute;
+  left: 276px;
+  top: 37px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 81px;
+  height: 23px;
+  border-radius: 10px;
+  background: #4b6688;
+  color: #fff;
+  font-size: 10px;
+}
+
+.tip {
+  margin: 15px 30px 0;
+  width: 380px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f0f8fd;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-size: 14px;
+  color: #102653;
+}
+
+.tip span {
+  flex: 1;
+}
+
+.nav {
+  position: relative;
+  margin-top: auto;
+  height: 90px;
+}
+
+.nav-bg {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+
+.nav-items {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 36px 16px;
+}
+
+.nav-item {
+  width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #607a9d;
+}
+
+.nav-item-active {
+  color: #168eea;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #31a9f7;
+  outline-offset: 2px;
+}
