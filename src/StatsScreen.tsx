@@ -168,41 +168,11 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
             )}
           </svg>
           <svg className="stats-drop" viewBox="0 0 88 112" aria-hidden="true">
-            <defs>
-              <linearGradient id="stats-drop-body" x1="22" y1="8" x2="68" y2="108" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#e9f8ff" />
-                <stop offset="28%" stopColor="#7ed2fc" />
-                <stop offset="62%" stopColor="#2aa4f4" />
-                <stop offset="100%" stopColor="#0d62b8" />
-              </linearGradient>
-              <radialGradient id="stats-drop-light" cx="34%" cy="38%" r="42%">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-                <stop offset="42%" stopColor="#ffffff" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="stats-drop-shade" x1="70" y1="40" x2="28" y2="108" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#08386e" stopOpacity="0" />
-                <stop offset="100%" stopColor="#08386e" stopOpacity="0.42" />
-              </linearGradient>
-              <clipPath id="stats-drop-shape">
-                <path d="M44 4C44 4 12 48 12 72C12 93.5 26.4 108 44 108C61.6 108 76 93.5 76 72C76 48 44 4 44 4Z" />
-              </clipPath>
-            </defs>
-            <g clipPath="url(#stats-drop-shape)">
-              <rect x="0" y="0" width="88" height="112" fill="url(#stats-drop-body)" />
-              <rect x="0" y="0" width="88" height="112" fill="url(#stats-drop-shade)" />
-              <ellipse cx="33" cy="58" rx="16" ry="22" fill="url(#stats-drop-light)" />
-              <ellipse cx="30" cy="46" rx="6" ry="10" fill="#ffffff" opacity="0.85" transform="rotate(-24 30 46)" />
-              <circle cx="30" cy="78" r="3.2" fill="#ffffff" opacity="0.55" />
-              <circle cx="40" cy="90" r="2.1" fill="#ffffff" opacity="0.4" />
-              <circle cx="26" cy="96" r="1.4" fill="#ffffff" opacity="0.35" />
-            </g>
             <path
               d="M44 4C44 4 12 48 12 72C12 93.5 26.4 108 44 108C61.6 108 76 93.5 76 72C76 48 44 4 44 4Z"
-              fill="none"
-              stroke="#7ec8f8"
-              strokeWidth="1.5"
+              fill="#2aaaf8"
             />
+            <ellipse cx="32" cy="62" rx="7" ry="14" fill="#ffffff" opacity="0.35" transform="rotate(-18 32 62)" />
           </svg>
         </div>
         <div className="stats-hero-copy">

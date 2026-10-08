@@ -245,9 +245,9 @@
 }
 
 .stats-bar-track span {
-  width: 14px;
-  border-radius: 7px 7px 3px 3px;
-  background: linear-gradient(#8fd0fb, #2f9fe8);
+  width: 16px;
+  border-radius: 4px;
+  background: #299ff0;
 }
 
 .stats-col em {
