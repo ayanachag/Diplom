@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react'
 import './App.css'
 import statusSignal from './assets/water/status-signal.svg'
 import statusWifi from './assets/water/status-wifi.svg'
@@ -150,6 +150,9 @@ export default function App() {
   const [customValue, setCustomValue] = useState('')
   const [pulseId, setPulseId] = useState(0)
   const [celebrate, setCelebrate] = useState(false)
+  const [, setPortionTick] = useState(0)
+  const consumedRef = useRef(1000)
+  const portionsRef = useRef<number[]>([])
   const confetti = useMemo(() => (celebrate ? makeConfetti() : []), [celebrate])
 
   useEffect(() => {
@@ -170,12 +173,26 @@ export default function App() {
   function addWater(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) return
     const added = Math.round(amount)
-    setConsumed((value) => {
-      const next = Math.min(9999, value + added)
-      if (value < GOAL && next >= GOAL) setCelebrate(true)
-      return next
-    })
+    const current = consumedRef.current
+    const next = Math.min(9999, current + added)
+    const actual = next - current
+    if (actual <= 0) return
+    consumedRef.current = next
+    portionsRef.current = [...portionsRef.current, actual]
+    if (current < GOAL && next >= GOAL) setCelebrate(true)
+    setConsumed(next)
+    setPortionTick((value) => value + 1)
     setPulseId((value) => value + 1)
+  }
+
+  function removeWater() {
+    const items = portionsRef.current
+    const last = items.length > 0 ? items[items.length - 1] : 250
+    if (items.length > 0) portionsRef.current = items.slice(0, -1)
+    const next = Math.max(0, consumedRef.current - last)
+    consumedRef.current = next
+    setConsumed(next)
+    setPortionTick((value) => value + 1)
   }
 
   function submitCustom(event: FormEvent) {
@@ -246,6 +263,18 @@ export default function App() {
             </article>
 
             <article className="card card-remain">
+              <button
+                type="button"
+                className="undo-water"
+                aria-label={portionsRef.current.length > 0 ? 'Отменить последнюю порцию' : 'Убавить 250 миллилитров'}
+                disabled={consumed === 0}
+                onClick={(event) => {
+                  pressAction(event)
+                  removeWater()
+                }}
+              >
+                −
+              </button>
               <img src={dropRemain} alt="" />
               <p className="remain-label">Осталось</p>
               <p className="remain-value">{remaining} мл</p>
