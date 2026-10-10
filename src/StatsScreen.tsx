@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type CSSProperties, type MouseEvent } from 'react'
 import './StatsScreen.css'
 
 const GOAL = 2000
@@ -38,15 +38,36 @@ function glassesLabel(count: number) {
   return `выпито ${word}`
 }
 
+const MONTH_DAYS = 30
+const MONTH_WAVE = [1200, 1600, 900, 1800, 1400, 1100, 1700, 1500, 800, 1900]
+
+function monthAmounts(consumed: number) {
+  const dayOfMonth = new Date().getDate()
+  return Array.from({ length: MONTH_DAYS }, (_, index) =>
+    index + 1 === dayOfMonth ? consumed : MONTH_WAVE[index % MONTH_WAVE.length],
+  )
+}
+
 function grouped(value: number) {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
+function pressPeriod(event: MouseEvent<HTMLButtonElement>) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  event.currentTarget.animate(
+    [
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.08)', offset: 0.42 },
+      { transform: 'scale(1)' },
+    ],
+    { duration: 340, easing: 'ease' },
+  )
 }
 
 function periodStats(period: Period, consumed: number) {
   const today = new Date()
   const dayTotal = consumed
   const weekTotal = consumed * 7
-  const monthTotal = consumed * 23
 
   if (period === 'week') {
     return {
@@ -84,21 +105,25 @@ function periodStats(period: Period, consumed: number) {
     'Декабрь',
   ]
   if (period === 'month') {
+    const amounts = monthAmounts(consumed)
+    const peak = Math.max(2000, ...amounts)
+    const top = Math.ceil(peak / 1000) * 1000
+    const total = amounts.reduce((sum, value) => sum + value, 0)
     return {
       caption: `${monthNames[today.getMonth()]} ${today.getFullYear()}`,
-      total: monthTotal,
-      goal: GOAL * 30,
-      glasses: Math.max(0, Math.round(monthTotal / 250)),
+      total,
+      goal: GOAL * MONTH_DAYS,
+      glasses: Math.max(0, Math.round(total / 250)),
       amountCaption: 'выпито за месяц',
       streak: 12,
-      yLabels: ['8 000', '4 000', '0'],
-      bars: [
-        { label: '1', height: 42 },
-        { label: '8', height: 68 },
-        { label: '15', height: 100 },
-        { label: '22', height: 74 },
-        { label: '29', height: 81 },
-      ],
+      yLabels: [1, 0.75, 0.5, 0.25, 0].map((part) => grouped(Math.round(top * part))),
+      bars: amounts.map((value, index) => {
+        const day = index + 1
+        return {
+          label: day === 1 || day % 5 === 0 ? String(day) : '',
+          height: Math.round((value / top) * 100),
+        }
+      }),
     }
   }
 
@@ -129,7 +154,7 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
   const percent = Math.min(100, Math.round((view.total / view.goal) * 100))
   const dayTotal = consumed
   const weekTotal = consumed * 7
-  const monthTotal = consumed * 23
+  const monthTotal = monthAmounts(consumed).reduce((sum, value) => sum + value, 0)
 
   return (
     <div className="stats">
@@ -222,16 +247,27 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
           <PeriodSwitch period={period} onChange={setPeriod} compact />
         </div>
         <div className="stats-plot">
-          <div className="stats-yaxis">
-            {view.yLabels.map((label) => (
-              <span key={label}>{label}</span>
+          <div className="stats-scale" key={`axis-${period}`}>
+            {view.yLabels.map((label, index) => (
+              <span key={`${period}-${index}`} style={{ top: `${(index / (view.yLabels.length - 1)) * 100}%` }}>
+                {label}
+              </span>
             ))}
           </div>
-          <div className="stats-bars">
-            {view.bars.map((bar) => (
-              <div key={bar.label} className="stats-col">
+          <div
+            className={period === 'month' ? 'stats-bars stats-bars-month' : 'stats-bars'}
+            key={`bars-${period}`}
+            style={{ '--grid-steps': view.yLabels.length - 1 } as CSSProperties}
+          >
+            {view.bars.map((bar, index) => (
+              <div key={`${period}-${index}`} className="stats-col">
                 <div className="stats-bar-track">
-                  <span style={{ height: `${bar.height}%` }} />
+                  <span
+                    style={{
+                      height: `${bar.height}%`,
+                      animationDelay: `${index * (period === 'month' ? 12 : 45)}ms`,
+                    }}
+                  />
                 </div>
                 <em>{bar.label}</em>
               </div>
@@ -299,7 +335,10 @@ function PeriodSwitch({
           role="tab"
           aria-selected={period === item.id}
           className={period === item.id ? 'is-selected' : ''}
-          onClick={() => onChange(item.id)}
+          onClick={(event) => {
+            pressPeriod(event)
+            onChange(item.id)
+          }}
         >
           {item.label}
         </button>
