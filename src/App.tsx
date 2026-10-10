@@ -378,6 +378,12 @@ export default function App() {
           </form>
         )}
 
+        <button type="button" className="tip">
+          <img src={dropTip} alt="" />
+          <span>Пейте воду — сохраняйте энергию!</span>
+          <img src={chevron} alt="" />
+        </button>
+
         <section className="chart-card" aria-label="Динамика потребления">
           <div className="chart">
             <h2>Динамика потребления</h2>
@@ -418,12 +424,6 @@ export default function App() {
             <p className="goal-pill">Цель: {grouped(GOAL)} мл</p>
           </div>
         </section>
-
-        <button type="button" className="tip">
-          <img src={dropTip} alt="" />
-          <span>Пейте воду — сохраняйте энергию!</span>
-          <img src={chevron} alt="" />
-        </button>
             </>
           )}
         </div>
