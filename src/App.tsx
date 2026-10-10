@@ -190,10 +190,10 @@ export default function App() {
   const percent = Math.min(100, Math.round((consumed / GOAL) * 100))
   const praise =
     percent >= 100
-      ? { title: 'Готово!', text: 'Цель на сегодня выполнена!' }
+      ? { title: 'Готово!', text: 'Цель на\u00A0сегодня выполнена!' }
       : percent >= 50
-        ? { title: 'Отлично!', text: 'Вы на пути к цели!' }
-        : { title: 'Продолжайте!', text: 'Вы на пути к цели!' }
+        ? { title: 'Отлично!', text: 'Вы на\u00A0пути к\u00A0цели!' }
+        : { title: 'Продолжайте!', text: 'Вы на\u00A0пути к\u00A0цели!' }
 
   function addWater(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) return
@@ -247,7 +247,7 @@ export default function App() {
         <div className="header">
           <div>
             <h1>Вода</h1>
-            <p>Забота о себе каждый день</p>
+            <p>Забота о{'\u00A0'}себе каждый день</p>
           </div>
           <button type="button" className="icon-button" aria-label="Настройки">
             <img src={settingsIcon} alt="" />

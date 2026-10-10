@@ -75,7 +75,7 @@ function periodStats(period: Period, consumed: number) {
       total: weekTotal,
       goal: GOAL * 7,
       glasses: Math.max(0, Math.round(weekTotal / 250)),
-      amountCaption: 'выпито за неделю',
+      amountCaption: 'выпито за\u00A0неделю',
       streak: 7,
       yLabels: ['2 000', '1 000', '0'],
       bars: [
@@ -114,7 +114,7 @@ function periodStats(period: Period, consumed: number) {
       total,
       goal: GOAL * MONTH_DAYS,
       glasses: Math.max(0, Math.round(total / 250)),
-      amountCaption: 'выпито за месяц',
+      amountCaption: 'выпито за\u00A0месяц',
       streak: 12,
       yLabels: [1, 0.75, 0.5, 0.25, 0].map((part) => grouped(Math.round(top * part))),
       bars: amounts.map((value, index) => {
@@ -161,7 +161,7 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
       <div className="stats-header">
         <div>
           <h1>Статистика</h1>
-          <p>Следите за своим прогрессом</p>
+          <p>Следите за{'\u00A0'}своим прогрессом</p>
         </div>
         <button type="button" className="stats-calendar" aria-label="Календарь">
           <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
@@ -212,7 +212,7 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
             <div>
               <p>Осталось</p>
               <strong>{grouped(remaining)} мл</strong>
-              <span>до цели</span>
+              <span>до{'\u00A0'}цели</span>
             </div>
           </div>
         </div>
@@ -306,8 +306,8 @@ export default function StatsScreen({ consumed }: { consumed: number }) {
       <button type="button" className="stats-banner">
         <TargetIcon />
         <span>
-          <strong>Вы на пути к цели!</strong>
-          Продолжайте пить воду регулярно, чтобы чувствовать себя лучше.
+          <strong>Вы на{'\u00A0'}пути к{'\u00A0'}цели!</strong>
+          Продолжайте пить воду регулярно, чтобы&nbsp;чувствовать себя лучше.
         </span>
         <svg width="8" height="14" viewBox="0 0 8 14" aria-hidden="true">
           <path d="M1 1l6 6-6 6" fill="none" stroke="#8aa4c0" strokeWidth="1.6" strokeLinecap="round" />
